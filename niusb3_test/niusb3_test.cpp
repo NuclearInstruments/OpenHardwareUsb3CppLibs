@@ -90,7 +90,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	FILE *fp;
 	char listDev[2048];
 	uint32_t datarow[8192];
-	uint32_t dataread[8192];
+	uint32_t dataread[66000];
 	uint32_t *data_words = (uint32_t*) malloc(100000000 * sizeof(uint32_t));//[96000];
 	char *TEXT = (char*) malloc(1000000 * sizeof(uint32_t));//[96000];
 	int Count;
@@ -110,21 +110,72 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	NI_USB3_ConnectDevice((char *) vect[0].c_str(), &handle);
 
-	transferlen=8192;
+
+	//Try read security data in bootloader
+	//
+	uint64_t UID;
+	uint32_t SN;
+
+	unsigned int active;
+	unsigned int trial_counter;
+	unsigned int trial_expired;
+	float temperature;
+	 char DATA [4] ;
+	 char DATA_R [4] ;
+
+	NI_IIC_HANDLE iic0;
+
+	NI_USB3_SetIICControllerBaseAddress(30, 31,  &handle);//(0x80050008, 0x80050009,  &handle);
+
+	NI_USB3_GetDT5550WTempSens(0, &temperature, &handle);
+	
+/*
+	NI_USB3_IICUser_OpenController(0x80050008, 0x80050009,  &handle, &iic0);
+	
+
+	DATA[0] = 0x00;
+	NI_USB3_IICUser_ReadData(0x54, DATA, 1, DATA, 16,  &iic0);
+
+	*/
+
+	
+	char model[5];
+	int asic_count;
+	int bSN;
+	
+	NI_USB3_GetDT5550_DGBoardInfo(model, &asic_count, &bSN, &handle);
+	
+
+
+
+//	SECReadActivationStatus(&active, &trial_counter, &trial_expired, &handle);
+
+	transferlen=1023;
+
+	
+	 NI_USB3_SetHV(true, 50, &handle);
+	bool Enable; float voltage; float current;
+	NI_USB3_GetHV(&Enable, &voltage, &current, &handle);
 	q=0;
 
-		for (int z = 0; z<transferlen; z++)
-		{
-			datarow[z] = q++;
-		}
+
+	
 
 	//Ram Test. Perform a write/read of a RAM area to test transfer errors
 	while(1)
 	{
-
+	    for (int z = 0; z<transferlen; z++)
+		{
+			uint32_t x;
+			x = rand() & 0xff;
+			x |= (rand() & 0xff) << 8;
+			x |= (rand() & 0xff) << 16;
+			x |= (rand() & 0xff) << 24;
+			datarow[z] = x;
+		}
 	
-		NI_USB3_WriteData(datarow, transferlen, 0x80000000, REG_ACCESS, 1000, &handle, &rw);
-		NI_USB3_ReadData(dataread, transferlen, 0x80000000, REG_ACCESS, 1000, &handle, &rw, &vd);
+		NI_USB3_WriteData(datarow, transferlen, 0xFFFD0000, REG_ACCESS, 1000, &handle, &rw);
+		NI_USB3_ReadData(dataread, transferlen, 0xFFFD0000, REG_ACCESS, 1000, &handle, &rw, &vd);
 		
 		for (i = 0; i<transferlen; i++)
 		{
