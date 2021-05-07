@@ -62,6 +62,8 @@ enum USB_CONNECTION_STATUS
 typedef struct NI_HANDLE
 {
 	void  *device_handle;
+	uint32_t board_identifier;
+	uint32_t version;
 	USB_CONNECTION_STATUS connection_status;
 } NI_HANDLE;
 
@@ -124,6 +126,8 @@ NIUSB3_CORE_API int NI_USB3_SetDT5550_DGBoardInfo(char *model, int asic_count, i
 
 NIUSB3_CORE_API int NI_USB3_GetDT5550WTempSens(int address, float *temp, NI_HANDLE *handle);
 
+
+NIUSB3_CORE_API int NI_USB3_AllocHandle(NI_HANDLE **handle);
 
 #ifdef NIUSB3_CORE_EXPORTS
 	uint32_t __IICBASEADDRESS;

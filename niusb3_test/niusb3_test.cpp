@@ -138,6 +138,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	*/
 
+	//NI_USB3_SetDT5550_DGBoardInfo("CIT", 4, 12, &handle);
 	
 	char model[5];
 	int asic_count;
@@ -153,7 +154,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	transferlen=1023;
 
 	
-	 NI_USB3_SetHV(true, 50, &handle);
+	 NI_USB3_SetHV(true, 35, &handle);
 	bool Enable; float voltage; float current;
 	NI_USB3_GetHV(&Enable, &voltage, &current, &handle);
 	q=0;
