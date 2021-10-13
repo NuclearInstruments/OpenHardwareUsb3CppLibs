@@ -43,7 +43,7 @@ NIUSB3_CORE_API int NI_USB3_ConnectDevice(char *serial_number, NI_HANDLE *handle
 	if (ftStatus == FT_OK)
 		FT_CycleDevicePort(handle->device_handle);
 
-	Sleep(500);
+	Sleep(2500);
 
 	FT_Close(handle->device_handle);
 
@@ -62,6 +62,8 @@ NIUSB3_CORE_API int NI_USB3_ConnectDevice(char *serial_number, NI_HANDLE *handle
 
 	 
 	}
+
+
 	handle->connection_status = CONNECTED;
 
 	NI_USB3_ReadReg(&(handle->version), 0xFFFEFFFC, handle);
