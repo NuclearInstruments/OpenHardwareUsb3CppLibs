@@ -245,5 +245,5 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-
+DIST/
 !COPY_TO_BIN/**
